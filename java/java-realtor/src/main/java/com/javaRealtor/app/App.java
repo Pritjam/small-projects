@@ -59,7 +59,7 @@ public class App {
     for (int zip : zipCodes) {
       zipLists.add(Unirest.get(listBaseURL + "&postal_code=" + zip + "&price_max=" + maxPrice + "&limit=" + numListings)
                      .header("x-rapidapi-host", "realtor.p.rapidapi.com")
-                     .header("x-rapidapi-key", "6d9dac7e3amshbf90b8b8cd6ea9dp1e17d3jsn2a754755ddbf")
+                     .header("x-rapidapi-key", "whoa there I'm not putting my key here!")
                      .asString()
                   );
       numOfReqs++;
@@ -89,7 +89,7 @@ public class App {
       propertyDetails.add(
                           Unirest.get("https://realtor.p.rapidapi.com/properties/v2/detail?property_id=" + propertyID)
                             .header("x-rapidapi-host", "realtor.p.rapidapi.com")
-                            .header("x-rapidapi-key", "6d9dac7e3amshbf90b8b8cd6ea9dp1e17d3jsn2a754755ddbf")
+                            .header("x-rapidapi-key", "whoa there I'm not putting my key here!")
                             .asString()
                          );
       numOfReqs++;
