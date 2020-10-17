@@ -1,6 +1,6 @@
 class Test {
   public static void main(String[] args) {
     String tester = "0x20";
-    System.out.println(Integer.parseInt(tester));
+    System.out.println(Integer.decode(tester));
   }
 }

@@ -1,6 +1,7 @@
 class Test {
   public static void main(String[] args) {
-    String tester = "0x20";
-    System.out.println(Integer.decode(tester));
+    for(int i = 0; j = 5; i < 6; i++; j++){
+      System.out.println(i + " " + j);
+    }
   }
 }
