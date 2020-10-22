@@ -9,19 +9,24 @@ public class App {
   public static void writeFrame(byte[] frame, SerialPort sp) throws IOException, InterruptedException {
     for(byte val : frame) {
       sp.getOutputStream().write(val);
+      //System.out.println(val);
     }
   }
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scan = new Scanner(System.in);
-        SerialPort sp = SerialPort.getCommPort("COM5"); // device name
+        SerialPort sp = SerialPort.getCommPort("COM3"); // device name
         sp.setComPortParameters(250000, 8, 1, 0); // default connection settings for Arduino
         sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0); // block until bytes can be written
         
-        if (sp.openPort()) {
-          System.out.println("Port is open :)");
+
+        if (sp.closePort()) {
+          System.out.println("Port is closed :)");
         } else {
-          System.out.println("Failed to open port :(");
+          System.out.println("Failed to close port :(");
+          return;
         }
+        
+
         
         System.out.println("Enter File Path");
         String filePath = scan.nextLine();
@@ -57,13 +62,24 @@ public class App {
           fileReader.read(temp);
           framesArray[i] = temp;
         }
+
+        if (sp.openPort()) {
+          System.out.println("Port is open :)");
+        } else {
+          System.out.println("Failed to open port :(");
+        }
         
 
         //now to play the song
         //now to play the song
+        int i = 0;
         for(byte[] frame : framesArray) {
+          i++;
+          if(i % 10 == 0) {
+            System.out.println("second has passed");
+          }
           writeFrame(frame, sp);
-          Thread.sleep(20);
+          Thread.sleep(3500);
         }
         fileReader.close();
         scan.close();
@@ -74,6 +90,7 @@ public class App {
           System.out.println("Failed to close port :(");
           return;
         }
+        
         
       }
 }
