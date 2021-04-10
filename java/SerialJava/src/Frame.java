@@ -26,10 +26,6 @@ public class Frame {
         frame[13] = (byte) 0b00001000;
         frame[14] = (byte) 0b00000000;
         frame[15] = (byte) 0b00000000;
-
-        for(byte b : frame) {
-            System.out.printf("0x%x/n", b);
-        }
         return frame;
     }
 
@@ -46,7 +42,7 @@ private class Note {
     private int frequency;
     private int volume;
     private String name;
-    private final int DEFAULT_VOLUME = 12;
+    private final int DEFAULT_VOLUME = 8;
 
     public Note(String note) {
         name = note;

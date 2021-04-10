@@ -80,12 +80,8 @@ public class App {
 		Thread.sleep(2000);
 
 		// // now to play the song
-		int i = 0;
+		System.out.println(framesArray.length);
 		for (byte[] frame : framesArray) {
-			i++;
-			if (i % 10 == 0) {
-				System.out.println();
-			}
 			writeFrame(frame, arduino);
 			Thread.sleep(23);
 		}

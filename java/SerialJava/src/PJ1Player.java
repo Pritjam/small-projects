@@ -6,6 +6,7 @@ import com.fazecast.jSerialComm.SerialPort;
 
 public class PJ1Player {
     public static void main(String[] args) throws Exception {
+        final String DELIMITER = "-";
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter File Path");
 		String filePath = scan.nextLine();
@@ -34,7 +35,7 @@ public class PJ1Player {
 
         for(int i = 0; i < 3; i++) {
             String line = reader.nextLine();
-            channelStreams[i] = line.split("-", -1);
+            channelStreams[i] = line.split(DELIMITER, -1);
         }
         reader.close();
 
