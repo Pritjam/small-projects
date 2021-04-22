@@ -1,3 +1,8 @@
+#define AFTER_FRAME_MIXER 14
+
+byte songData[32];
+
+
 void setup() {
   DDRG = B11111111;
   DDRC = B11111111;
@@ -19,8 +24,12 @@ void loop() {
   }
   digitalWrite(52, LOW);
 
-
-  byte songData[14];
+  digitalWrite(41, HIGH);
+  delay(1);
+  PORTC = 7;
+  delay(1);
+  PORTC = songData[AFTER_FRAME_MIXER]; 
+  
   int j = 0;
   while (Serial.available() > 0) {
     byte incomingByte = Serial.read(); 
