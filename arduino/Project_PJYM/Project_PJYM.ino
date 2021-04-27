@@ -28,6 +28,8 @@ void loop() {
   delay(1);
   PORTC = 7;
   delay(1);
+  digitalWrite(41, LOW);
+  delay(1);
   PORTC = songData[AFTER_FRAME_MIXER]; 
   
   int j = 0;
