@@ -17,40 +17,36 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(52, LOW);
+  digitalWrite(LED_BUILTIN, HIGH);
   while (Serial.available() == 0) {
-    digitalWrite(52, HIGH);
+    digitalWrite(LED_BUILTIN, LOW);
     ; //wait for song data to be available
   }
-  digitalWrite(52, LOW);
+  digitalWrite(LED_BUILTIN, HIGH);
 
-  digitalWrite(41, HIGH);
-  delay(1);
-  PORTC = 7;
-  delay(1);
-  digitalWrite(41, LOW);
-  delay(1);
-  PORTC = songData[AFTER_FRAME_MIXER]; 
-  
+//  if (songData[AFTER_FRAME_MIXER] != B00000000) {
+//    digitalWrite(41, HIGH);
+//    PORTC = 7;
+//    digitalWrite(41, LOW);
+//    PORTC = songData[AFTER_FRAME_MIXER];
+//  }
+delay(20);
+
   int j = 0;
   while (Serial.available() > 0) {
-    byte incomingByte = Serial.read(); 
+    byte incomingByte = Serial.read();
     songData[j] = incomingByte;
     j++;
     // read the incoming byte into the array
   }
-  
+
   //write song data to ym2149
   //PORTC represents the 8-bit data/address buss
   for (int i = 0; i < 14; i++) {
     digitalWrite(41, HIGH);
-    delay(1);
     PORTC = i; //input address
-    delay(1);
     digitalWrite(41, LOW);
-    delay(1);
     PORTC = songData[i]; //input register data
-    delay(1);
   }
-  
+
 }
