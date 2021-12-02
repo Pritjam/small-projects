@@ -2,6 +2,7 @@ target
 .vscode
 *.class
 *.exe
+*.json
 
 
 
