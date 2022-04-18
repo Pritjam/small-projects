@@ -1,8 +1,9 @@
 #include <IBusBM.h>
+#define RIGHT 1;
+#define LEFT 2;
 
 IBusBM IBus;
-int rightMotorSensor = 1;
-int leftMotorSensor = 2;
+
 void setup() {
   //Use the only serial I have, serial0, using pins 0 and 1 for rx and tx
   Serial.begin(Serial);
@@ -18,8 +19,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   //right motor voltage = ((int)50*(analogRead(A0)/1024.0));
-  IBus.setSensorMeasurement(rightMotorSensor, ((int)50*(analogRead(A0)/1024.0)));
+  IBus.setSensorMeasurement(RIGHT, ((int)50*(analogRead(A0)/1024.0)));
   //left motor voltage = ((int)50*(analogRead(A0)/1024.0));
-  IBus.setSensorMeasurement(leftMotorSensor, ((int)50*(analogRead(A1)/1024.0)));
+  IBus.setSensorMeasurement(LEFT, ((int)50*(analogRead(A1)/1024.0)));
 
 }

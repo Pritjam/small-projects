@@ -4,6 +4,7 @@
 //program for the tiny Arduino Leonardo (see spreadsheet for more)
 int interruptPin = 3; //Pin connected to RX aux, controlled by a dial on the TX. Pin 3 is the SCL pin.
 volatile unsigned long pulseLength;  // When accessing this in setup or loop (or anything called by either) interrupts must be disabled
+volatile unsigned long riseTime; //Time of front raising, or going from LOW to HIGH
 int hue;
 CRGB leds[NUM_LEDS];
 
@@ -28,14 +29,10 @@ void loop() {
 }
 
 void updateColor() {
-  unsigned long riseTime;  //Time of front raising, or going from LOW to HIGH
-  unsigned long fallTime;  //Time of front falling, or going from HIGH to LOW
-
-  if (digitalRead(interruptPin) == HIGH) {
+  if (digitalRead(interruptPin) == HIGH) { //TODO: Update this to use a bitwise read
     riseTime = micros(); //get time when pulse went up
   }
   else {
-    fallTime = micros();  //get time when pulse went down
-    pulseLength = riseTime - fallTime;  //measure time between down and up, and save it as pulseLength, which is later accessed from loop()
+    pulseLength = riseTime - micros();  //measure time between down and up, and save it as pulseLength, which is later accessed from loop()
   }
 }

@@ -3,24 +3,24 @@
 // Let PORTK 0-7 correspond to A8-A15
 // Let PORTG 0, 1, 2, 5 correspond to CE, OE, WE, A16 respectively
 
-#define CENABLE PORTG&=B01111111
-#define CDISABLE PORTG|=B10000000
-#define OENABLE PORTG&=B10111111
-#define ODISABLE PORTG|=B01000000
-#define WENABLE PORTG&=B11011111
-#define WDISABLE PORTG|=B00100000
+#define CENABLE PORTG&=B11111110
+#define CDISABLE PORTG|=B00000001
+#define OENABLE PORTG&=B11111101
+#define ODISABLE PORTG|=B00000010
+#define WENABLE PORTG&=B11111011
+#define WDISABLE PORTG|=B00000100
 
-#define READCOMMAND 0xAB //these two are arbitrarily chosen
-#define WRITECOMMAND 0xCD
+#define READCOMMAND 0x62 //these two are arbitrarily chosen
+#define WRITECOMMAND 0x61
 
-void loadAddress(uint16_t addr) {
+void load_address(uint16_t addr) {
   PORTF = addr & 0xFF;
   PORTK = (addr >> 8) & 0xFF;
 }
 
 // This method loads the 3-byte software data protection to the chip.
 void softwareDataProtection() {
-  loadAddress(0x5555);
+  load_address(0x5555);
   DDRA = 0xFF;
   PORTA = 0xAA;
   CENABLE;
@@ -28,7 +28,7 @@ void softwareDataProtection() {
   CDISABLE;
   WDISABLE;
   
-  loadAddress(0x2AAA);
+  load_address(0x2AAA);
   DDRA = 0xFF;
   PORTA = 0x55;
   CENABLE;
@@ -36,7 +36,7 @@ void softwareDataProtection() {
   CDISABLE;
   WDISABLE;
   
-  loadAddress(0x5555);
+  load_address(0x5555);
   DDRA = 0xFF;
   PORTA = 0xA0;
   CENABLE;
@@ -46,7 +46,7 @@ void softwareDataProtection() {
 }
 
 void chipErase() {
-  loadAddress(0x5555);
+  load_address(0x5555);
   DDRA = 0xFF;
   PORTA = 0xAA;
   CENABLE;
@@ -54,7 +54,7 @@ void chipErase() {
   CDISABLE;
   WDISABLE;
   
-  loadAddress(0x2AAA);
+  load_address(0x2AAA);
   DDRA = 0xFF;
   PORTA = 0x55;
   CENABLE;
@@ -62,7 +62,7 @@ void chipErase() {
   CDISABLE;
   WDISABLE;
   
-  loadAddress(0x5555);
+  load_address(0x5555);
   DDRA = 0xFF;
   PORTA = 0x80;
   CENABLE;
@@ -70,7 +70,7 @@ void chipErase() {
   CDISABLE;
   WDISABLE;
   
-  loadAddress(0x5555);
+  load_address(0x5555);
   DDRA = 0xFF;
   PORTA = 0xAA;
   CENABLE;
@@ -78,7 +78,7 @@ void chipErase() {
   CDISABLE;
   WDISABLE;
   
-  loadAddress(0x2AAA);
+  load_address(0x2AAA);
   DDRA = 0xFF;
   PORTA = 0x55;
   CENABLE;
@@ -86,7 +86,7 @@ void chipErase() {
   CDISABLE;
   WDISABLE;
   
-  loadAddress(0x5555);
+  load_address(0x5555);
   DDRA = 0xFF;
   PORTA = 0x10;
   CENABLE;
@@ -98,7 +98,7 @@ void chipErase() {
 // This method writes the provided byte of data to the provided address, and takes care of loading the SDP sequence beforehand.
 void writeSSTByte(unsigned int address, byte data) {
   softwareDataProtection();
-  loadAddress(address);
+  load_address(address);
   DDRA = 0xFF;
   PORTA = data;
   CENABLE;
@@ -106,68 +106,75 @@ void writeSSTByte(unsigned int address, byte data) {
   CDISABLE;
   WDISABLE;
   //just to give enough time for the internal write operation to complete
-  delayMicroseconds(50);  
+  delayMicroseconds(20);  
 }
 
 // This method reads a byte at the given address.
 byte readSSTByte(unsigned int address) {
-  loadAddress(address);
+  load_address(address);
   DDRA = 0x0;
-  PORTG&=B01111111;
-  PORTG&=B10111111;
-  delay(1);
+  CENABLE;
+  OENABLE;
+  delayMicroseconds(10);
   byte retVal = 21;
   retVal = PINA;
-  PORTG|=B10000000;
-  PORTG|=B01000000;
+  CDISABLE;
+  ODISABLE;
   return retVal;
 }
 
 void setup() {
+  pinMode(11, OUTPUT);
+  analogWrite(11, 40);
   Serial.begin(9600);
+  Serial.flush();
   // set up port directions
+  
   DDRA = 0xFF;
   DDRF = 0xFF;
   DDRK = 0xFF;
-  DDRG  |= B11100100;
-  PORTG  = B11100000; // let A16 be 0
+  DDRG  |= B00100111;
+  PORTG  = B00000111; // let A16 be 0
+  analogWrite(11, 0);
 
-  
 //  Serial.println("Attempting write of 0xab to address 0");
-//  writeSSTByte(0, 0xAB);
+//  writeSSTByte(0, 0xCD);
 //  Serial.println("Write complete.");
 //  byte b = readSSTByte(0);
 //  Serial.println("Printing val of b: ");
 //  Serial.println(b);
 //  Serial.println("B val printed");
 
-//  Serial.println("attempting to chip-erase...");
-//  chipErase();
-//  delay(1000);
-//  Serial.println("Chip erase should have completed by now.");
-  byte b = readSSTByte(0);
-  Serial.println("Printing val of b: ");
-  Serial.println(b);
-  Serial.println("B val printed");
+  Serial.write('A');
+//  Serial.print(readSSTByte(0));
+//  Serial.write('A');
 }
-
 
 
 void loop() {
   
   // put your main code here, to run repeatedly:
-//  while(Serial.available() < 0);
-//  byte command = Serial.read();
-//  
-//  if(command == WRITECOMMAND) {
-//      unsigned int address = Serial.read();
-//      address |= Serial.read() << 8;
-//      byte data = Serial.read();
-//      writeByte(address, data);
-//  } else if(command == READCOMMAND){
-//      unsigned int address = Serial.read();
-//      address |= Serial.read() << 8;
-//      byte temp = readByte(address);
-//      Serial.println(temp, HEX);
-//  }
+  while(Serial.available() < 4) {
+    ;
+  }
+  
+  byte command = Serial.read(); 
+  
+  if(command == WRITECOMMAND) {
+      unsigned int address = Serial.read();
+      address |= Serial.read() << 8;
+      byte data = Serial.read();
+      writeSSTByte(address, data);
+      Serial.write(readSSTByte(address));
+      
+  } else if(command == READCOMMAND){
+      unsigned int address = Serial.read();
+      address |= Serial.read() << 8;
+      Serial.read(); //get rid of data
+      byte temp = readSSTByte(address);
+      Serial.write(temp);
+  }
+  if(Serial.available() != 0) {
+    analogWrite(11, 10);
+  }
 }
