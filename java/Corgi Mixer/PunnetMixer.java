@@ -1,9 +1,0 @@
-class PunnetMixer {
-  
-  
-  public PunnetMixer() {
-    
-  }
-  
-  
-}
